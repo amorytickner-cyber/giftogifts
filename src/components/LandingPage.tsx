@@ -32,6 +32,25 @@ export default function LandingPage() {
 
       if (submitError) throw submitError;
 
+      const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-message-email`;
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({
+          parentName: formData.parentName,
+          parentEmail: formData.parentEmail,
+          childAge: formData.childAge,
+          message: formData.message,
+        }),
+      });
+
+      if (!response.ok) {
+        console.error('Failed to send email notification');
+      }
+
       setSubmitted(true);
       setFormData({ parentName: '', parentEmail: '', childAge: '', message: '' });
     } catch (err) {
